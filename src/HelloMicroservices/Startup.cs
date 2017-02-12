@@ -19,7 +19,15 @@ namespace HelloMicroservices
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole();
-            app.UseOwin(buildFunc => buildFunc.UseNancy());
+            app.UseOwin(buildFunc =>
+            {
+                buildFunc(next => env1 =>
+                {
+                    System.Console.WriteLine("got request");
+                    return next(env1);
+                });
+                buildFunc.UseNancy();
+            });
 
             if (env.IsDevelopment())
             {
@@ -33,3 +41,4 @@ namespace HelloMicroservices
         }
     }
 }
+
